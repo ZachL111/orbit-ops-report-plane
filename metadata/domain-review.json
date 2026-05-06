@@ -1,0 +1,73 @@
+{
+  "repo": "orbit-ops-report-plane",
+  "language": "JavaScript",
+  "category": "Automation",
+  "goal": "Develop a JavaScript command-oriented project for report scenarios with bounded scenario files, conflict explanations, and bounded memory input sets.",
+  "review_model": {
+    "terms": [
+      "dry-run spread",
+      "rename risk",
+      "operator cost",
+      "idempotence"
+    ],
+    "lanes": [
+      "ship",
+      "watch",
+      "hold"
+    ],
+    "score": "signal * 2 + slack + confidence - drag * 3",
+    "purpose": "surface the domain-specific cases that need the most careful review"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "focus": "dry-run spread",
+      "signal": 67,
+      "slack": 25,
+      "drag": 22,
+      "confidence": 66,
+      "score": 159,
+      "lane": "ship"
+    },
+    {
+      "name": "stress",
+      "focus": "rename risk",
+      "signal": 46,
+      "slack": 35,
+      "drag": 25,
+      "confidence": 75,
+      "score": 127,
+      "lane": "watch"
+    },
+    {
+      "name": "edge",
+      "focus": "operator cost",
+      "signal": 82,
+      "slack": 27,
+      "drag": 28,
+      "confidence": 90,
+      "score": 197,
+      "lane": "ship"
+    },
+    {
+      "name": "recovery",
+      "focus": "idempotence",
+      "signal": 58,
+      "slack": 20,
+      "drag": 23,
+      "confidence": 68,
+      "score": 135,
+      "lane": "watch"
+    },
+    {
+      "name": "stale",
+      "focus": "dry-run spread",
+      "signal": 89,
+      "slack": 44,
+      "drag": 10,
+      "confidence": 75,
+      "score": 267,
+      "lane": "ship"
+    }
+  ]
+}

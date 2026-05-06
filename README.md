@@ -1,69 +1,40 @@
 # orbit-ops-report-plane
 
-`orbit-ops-report-plane` is a JavaScript project for Automation. It turns develop a JavaScript command-oriented project for report scenarios with bounded scenario files, conflict explanations, and bounded memory input sets into a small local model with readable fixtures and a direct verification command.
+`orbit-ops-report-plane` is a JavaScript project in automation. Its focus is to develop a JavaScript command-oriented project for report scenarios with bounded scenario files, conflict explanations, and bounded memory input sets.
 
-## Reading Orbit Ops Report Plane
+## Reason For The Project
 
-Start with the README, then open `metadata/project.json` to check the constants behind the examples. After that, `fixtures/cases.csv` shows the compact path and `examples/extended_cases.csv` gives a wider look at the same rule.
+The point is to make a small domain rule concrete enough that a reader can change it and immediately see what broke.
 
-## Purpose
+## Orbit Ops Report Plane Review Notes
 
-The goal is to capture the core behavior in code and make the surrounding assumptions obvious. A reader should be able to run the verifier, open the fixtures, and understand why each decision was made.
-
-## Fixture Notes
-
-`degraded` is the first example I would inspect because it lands on the `review` path with a score of -19. The broader file also keeps `degraded` at -19 and `surge` at 193, which gives the model a useful low-to-high spread.
-
-## Design Sketch
-
-The core is a scoring model over demand, capacity, latency, risk, and weight. That keeps dry-run output, file plans, and safety rails in one explicit decision path. The threshold is 157, with risk penalty 7, latency penalty 2, and weight bonus 2. The JavaScript version uses native modules and a small Node test path.
+`stale` and `stress` are the cases worth reading first. They show the optimistic and cautious ends of the fixture.
 
 ## What It Does
 
-- Models dry-run output with deterministic scoring and explicit review decisions.
-- Uses fixture data to keep file plans changes visible in code review.
-- Includes extended examples for safety rails, including `surge` and `degraded`.
-- Documents idempotent checks tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
+- `fixtures/domain_review.csv` adds cases for dry-run spread and rename risk.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/orbit-ops-report-walkthrough.md` walks through the case spread.
+- The JavaScript code includes a review path for `dry-run spread` and `rename risk`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Usage
+## How It Is Put Together
+
+The implementation keeps the scoring rule plain: reward signal and confidence, preserve slack, penalize drag, then classify the result into a review lane.
+
+The added JavaScript path is deliberately direct, with fixtures doing most of the explaining.
+
+## Run It
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Check It
 
-## Verification
+The same command runs the local verification path. The highest-scoring domain case is `stale` at 267, which lands in `ship`. The most cautious case is `stress` at 127, which lands in `watch`.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Boundaries
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Files Worth Reading
-
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-- `package.json`: Node package scripts
-
-## Next Directions
-
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Split the scoring constants into a typed configuration object and validate it before use.
-- Add a comparison mode that shows how decisions change when one signal is adjusted.
-- Add one more automation fixture that focuses on a malformed or borderline input.
-
-## Limits
-
-The scoring model is simple by design. More domain-specific behavior should be added through explicit adapters or extra fixture classes rather than hidden constants.
-
-## Setup
-
-Clone the repository, enter the directory, and run the verifier. No database server, cloud account, or token is required.
+The fixture set is small enough to audit by hand. The next useful expansion is malformed input coverage, not extra surface area.
